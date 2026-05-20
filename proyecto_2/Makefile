@@ -15,3 +15,15 @@ build-test: $(SRC_TEST)
 run-test: build-test
 	@echo "Running $(TARGET_TEST)..."
 	@./$(TARGET_TEST)
+
+SRC = n-body.cpp
+
+TARGET = build/n-body
+
+build: $(SRC)
+	@echo "Compiling $(SRC)..."
+	@g++ -o $(TARGET) $(SRC) $(CXXFLAGS) $(LIBS)
+
+run: build
+	@echo "Running $(TARGET)..."
+	@./$(TARGET)

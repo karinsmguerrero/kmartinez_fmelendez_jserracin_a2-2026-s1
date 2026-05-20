@@ -1,3 +1,4 @@
-build/
-docs/
-.vscode/
+*/build/
+*/docs/
+*/.vscode/
+proyecto_2/frames/
