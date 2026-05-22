@@ -16,7 +16,8 @@ run-test: build-test
 	@echo "Running $(TARGET_TEST)..."
 	@./$(TARGET_TEST)
 
-SRC = n-body.cpp
+# Target for sequential version of the n-body simulation
+SRC = models/n-body.cpp
 
 TARGET = build/n-body
 
@@ -27,3 +28,16 @@ build: $(SRC)
 run: build
 	@echo "Running $(TARGET)..."
 	@./$(TARGET)
+
+# Target for GPU version of the n-body simulation
+SRC_GPU = models/OpenCL/n-body_gpu.cpp
+
+TARGET_GPU = build/n-body_gpu
+
+build-gpu: $(SRC_GPU)
+	@echo "Compiling $(SRC_GPU)..."
+	@g++ -o $(TARGET_GPU) $(SRC_GPU) $(CXXFLAGS) $(LIBS)
+
+run-gpu: build-gpu
+	@echo "Running $(TARGET_GPU)..."
+	@./$(TARGET_GPU)	
