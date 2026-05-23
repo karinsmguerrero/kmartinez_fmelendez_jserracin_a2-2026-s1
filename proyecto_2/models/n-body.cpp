@@ -48,6 +48,7 @@ constexpr float MASS       = 1.0f;
 constexpr float SOFTENING  = 0.5f;
 constexpr bool SAVE_FRAMES = NBSAVEFRAMES != 0;
 constexpr bool VERBOSE_LOGS = NBVERBOSE != 0;
+static const char kFramesDir[] = "frames/secuencial";
 
 constexpr float PI_F = 3.14159265358979323846f;
 
@@ -298,13 +299,28 @@ void integrate(Body *bodies)
     integrate_kick(bodies);
 }
 
+static void prepare_frames_dir()
+{
+    if (!SAVE_FRAMES)
+        return;
+
+    struct stat st;
+    if (stat("frames", &st) != 0)
+        mkdir("frames", 0755);
+
+    char cmd[256];
+    snprintf(cmd, sizeof(cmd), "rm -dr %s", kFramesDir);
+    (void)system(cmd);
+    mkdir(kFramesDir, 0755);
+}
+
 // --- Guardado de frame en archivo binario ------------------------------------
 void save_frame(const Body *bodies, int step)
 {
     if (!SAVE_FRAMES) return;
 
     char filename[256];
-    snprintf(filename, sizeof(filename), "frames/frame_%04d.bin", step);
+    snprintf(filename, sizeof(filename), "%s/frame_%04d.bin", kFramesDir, step);
 
     int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd < 0) { fprintf(stderr, "Error abriendo %s\n", filename); return; }
@@ -330,11 +346,8 @@ int main(int argc, char *argv[])
     (void)argc;
     (void)argv;
 
-    try { if (SAVE_FRAMES) system("rm -dr frames"); }
-    catch (const std::exception &e) { std::cerr << e.what() << '\n'; }
-
     if (SAVE_FRAMES)
-        mkdir("frames", 0755);
+        prepare_frames_dir();
 
     Body *bodies = new Body[N];
     init_bodies(bodies);
@@ -361,7 +374,7 @@ int main(int argc, char *argv[])
     if (VERBOSE_LOGS)
     {
         if (SAVE_FRAMES)
-            printf("Frames guardados en frames/\n");
+            printf("Frames guardados en %s/\n", kFramesDir);
         printf("Listo.\n");
     }
 

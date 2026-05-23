@@ -3,13 +3,17 @@ SRC_TEST = main.cpp
 
 TARGET_TEST = build/test
 
-CXXFLAGS = -Wall -Wextra -std=c++11  
+CXXFLAGS = -Wall -Wextra -std=c++11 -ffp-contract=off -fno-fast-math -fexcess-precision=standard
 
 PYTHON ?= python3
 VISUALIZE = scripts/visualize.py
+VALIDATE = scripts/validation.py
 VENV ?= .venv
 VENV_PY = $(VENV)/bin/python
 REQS = requirements.txt
+COMPARE_ARGS ?=
+
+NBODIES ?= 1000
 
 CXXDEFS =
 ifdef NBODIES
@@ -65,6 +69,11 @@ run-gpu: build-gpu
 	@echo "Running $(TARGET_GPU)..."
 	@./$(TARGET_GPU)	
 
+# Target to generate outputs for both models with the same params
+run-both:
+	@$(MAKE) run
+	@$(MAKE) run-gpu
+
 # Target to visualize saved frames
 run-visualize:
 	@echo "Running $(VISUALIZE)..."
@@ -81,3 +90,8 @@ setup-venv:
 run-visualize:
 	@echo "Running $(VISUALIZE) with venv..."
 	@$(VENV_PY) $(VISUALIZE)
+
+# Target to compare frames from two model outputs
+compare-frames:
+	@echo "Comparing frames..."
+	@$(VENV_PY) $(VALIDATE) $(COMPARE_ARGS)

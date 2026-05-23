@@ -16,7 +16,7 @@ Controles:
     Q / Esc          — salir
 
 Uso:
-    python visualize_collision.py
+    python visualize.py [frames/secuencial]
 """
 
 import glob
@@ -29,13 +29,17 @@ app.use_app("pyqt5")
 from vispy import scene
 
 # ── Cargar frames ────────────────────────────────────────────────────
-frame_files = sorted(glob.glob("frames/frame_*.bin"))
+frames_dir = "frames/secuencial"
+if len(sys.argv) > 1:
+    frames_dir = sys.argv[1].rstrip("/")
+
+frame_files = sorted(glob.glob(f"{frames_dir}/frame_*.bin"))
 if not frame_files:
-    print("Error: No se encontraron archivos en frames/.")
-    print("Ejecuta primero nbody_collision.")
+    print(f"Error: No se encontraron archivos en {frames_dir}/.")
+    print("Ejecuta primero el modelo correspondiente.")
     sys.exit(1)
 
-print(f"Cargando {len(frame_files)} frames...")
+print(f"Cargando {len(frame_files)} frames desde {frames_dir}/...")
 frames_pos = []   # (num_frames, N, 3)  — solo xyz
 frames_gid = None # (N,)               — galaxy_id fijo en frame 0
 

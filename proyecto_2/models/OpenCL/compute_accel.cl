@@ -1,3 +1,5 @@
+#pragma OPENCL FP_CONTRACT OFF
+
 __kernel void compute_accel(__global const float *x,
                             __global const float *y,
                             __global const float *z,
