@@ -1,8 +1,5 @@
 #General makefile for the project
-SRC_TEST = main.cpp
-
-TARGET_TEST = build/test
-
+CXX ?= g++
 CXXFLAGS = -Wall -Wextra -std=c++11 -ffp-contract=off -fno-fast-math -fexcess-precision=standard
 
 PYTHON ?= python3
@@ -14,6 +11,9 @@ REQS = requirements.txt
 COMPARE_ARGS ?=
 
 NBODIES ?= 1000
+NSTEPS ?= 100
+NBSAVEFRAMES ?= 1
+NBVERBOSE ?= 0
 
 CXXDEFS =
 ifdef NBODIES
@@ -29,27 +29,18 @@ ifdef NBVERBOSE
 CXXDEFS += -DNBVERBOSE=$(NBVERBOSE)
 endif
 
-LIBS = -lOpenCL
-
-# Test to check if the OpenCL library is installed and working
-build-test: $(SRC_TEST)
-	@echo "Compiling $(SRC_TEST)..."
-	@mkdir -p build
-	@g++ -o $(TARGET_TEST) $(SRC_TEST) $(CXXFLAGS) $(LIBS)
-
-run-test: build-test
-	@echo "Running $(TARGET_TEST)..."
-	@./$(TARGET_TEST)
+BUILD_DIR = build
+LIBS_GPU = -lOpenCL
 
 # Target for sequential version of the n-body simulation
 SRC = models/n-body.cpp
 
-TARGET = build/n-body
+TARGET = $(BUILD_DIR)/n-body
 
 build: $(SRC)
 	@echo "Compiling $(SRC)..."
-	@mkdir -p build
-	@g++ -o $(TARGET) $(SRC) $(CXXFLAGS) $(CXXDEFS) $(LIBS)
+	@mkdir -p $(BUILD_DIR)
+	@$(CXX) -o $(TARGET) $(SRC) $(CXXFLAGS) $(CXXDEFS)
 
 run: build
 	@echo "Running $(TARGET)..."
@@ -58,12 +49,12 @@ run: build
 # Target for GPU version of the n-body simulation
 SRC_GPU = models/OpenCL/n-body_gpu.cpp
 
-TARGET_GPU = build/n-body_gpu
+TARGET_GPU = $(BUILD_DIR)/n-body_gpu
 
 build-gpu: $(SRC_GPU)
 	@echo "Compiling $(SRC_GPU)..."
-	@mkdir -p build
-	@g++ -o $(TARGET_GPU) $(SRC_GPU) $(CXXFLAGS) $(CXXDEFS) $(LIBS)
+	@mkdir -p $(BUILD_DIR)
+	@$(CXX) -o $(TARGET_GPU) $(SRC_GPU) $(CXXFLAGS) $(CXXDEFS) $(LIBS_GPU)
 
 run-gpu: build-gpu
 	@echo "Running $(TARGET_GPU)..."
@@ -73,11 +64,6 @@ run-gpu: build-gpu
 run-both:
 	@$(MAKE) run
 	@$(MAKE) run-gpu
-
-# Target to visualize saved frames
-run-visualize:
-	@echo "Running $(VISUALIZE)..."
-	@$(PYTHON) $(VISUALIZE)
 
 # Target to set up venv for visualization
 setup-venv:
@@ -95,3 +81,7 @@ run-visualize:
 compare-frames:
 	@echo "Comparing frames..."
 	@$(VENV_PY) $(VALIDATE) $(COMPARE_ARGS)
+
+.PHONY: all build run build-gpu run-gpu run-both setup-venv run-visualize compare-frames
+
+all: build build-gpu
