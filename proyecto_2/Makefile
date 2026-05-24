@@ -61,9 +61,7 @@ run-gpu: build-gpu
 	@./$(TARGET_GPU)	
 
 # Target to generate outputs for both models with the same params
-run-both:
-	@$(MAKE) run
-	@$(MAKE) run-gpu
+run-both: run run-gpu
 
 # Target to set up venv for visualization
 setup-venv:

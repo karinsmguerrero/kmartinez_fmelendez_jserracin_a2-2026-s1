@@ -95,12 +95,6 @@ static void init_one_disk(Body *bodies,
         return lo + (hi - lo) * rng();
     };
 
-    auto rand_normal = [&]() -> float {
-        float u1 = rand_uniform(eps, 1.0f);
-        float u2 = rand_uniform(eps, 1.0f);
-        return std::sqrt(-2.0f * std::log(u1)) * std::cos(2.0f * PI_F * u2);
-    };
-
     auto hernquist = [&](float r, float r0, float M) -> float {
         float rr = std::max(r, HERNQUIST_R_MIN);
         return (M / (2.0f * PI_F)) * (r0 / (rr * std::pow(r0 + rr, 3.0f)));

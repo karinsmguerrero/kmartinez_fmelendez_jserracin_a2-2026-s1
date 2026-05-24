@@ -1,6 +1,7 @@
 /* Parts of this code are based on Code taken from https://github.com/NoNumberMan/OpenCLTutorial/blob/main/main.cpp*/
 #define CL_HPP_ENABLE_EXCEPTIONS
 #define CL_HPP_TARGET_OPENCL_VERSION 200
+#define CL_TARGET_OPENCL_VERSION 200
 
 #include <cassert>
 #include <fstream>
@@ -92,13 +93,6 @@ static void init_one_disk(Body *bodies,
 	auto rand_uniform = [&](float lo, float hi) -> float
 	{
 		return lo + (hi - lo) * rng();
-	};
-
-	auto rand_normal = [&]() -> float
-	{
-		float u1 = rand_uniform(eps, 1.0f);
-		float u2 = rand_uniform(eps, 1.0f);
-		return std::sqrt(-2.0f * std::log(u1)) * std::cos(2.0f * PI_F * u2);
 	};
 
 	auto hernquist = [&](float r, float r0, float M) -> float
@@ -417,10 +411,19 @@ void print_deviceinfo(cl_device_id device)
 	clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(size_t), &maxWorkGroupSize, &maxWorkGroupSizeLength);
 	printf("Device max work group size: %zu\n", maxWorkGroupSize);
 
+#if defined(CL_DEVICE_MAX_NUM_SUB_GROUPS)
 	cl_uint maxNumberOfSubGroups;
 	size_t maxNumberOfSubGroupsLength;
 	clGetDeviceInfo(device, CL_DEVICE_MAX_NUM_SUB_GROUPS, sizeof(cl_uint), &maxNumberOfSubGroups, &maxNumberOfSubGroupsLength);
 	printf("Device max number of sub groups: %u\n", maxNumberOfSubGroups);
+#elif defined(CL_DEVICE_MAX_NUM_SUB_GROUPS_KHR)
+	cl_uint maxNumberOfSubGroups;
+	size_t maxNumberOfSubGroupsLength;
+	clGetDeviceInfo(device, CL_DEVICE_MAX_NUM_SUB_GROUPS_KHR, sizeof(cl_uint), &maxNumberOfSubGroups, &maxNumberOfSubGroupsLength);
+	printf("Device max number of sub groups: %u\n", maxNumberOfSubGroups);
+#else
+	printf("Device max number of sub groups: N/A\n");
+#endif
 }
 
 void init_environment()
@@ -442,14 +445,14 @@ void init_environment()
 
 	if (VERBOSE_LOGS)
 	{
-		for (int i = 0; i < platformCount; ++i)
+		for (unsigned int i = 0; i < platformCount; ++i)
 		{
 			print_platforminfo(platforms[i]);
 		}
 	}
 
 	device = nullptr;
-	for (int i = 0; i < platformCount && device == nullptr; ++i)
+	for (unsigned int i = 0; i < platformCount && device == nullptr; ++i)
 	{
 		cl_device_id devices[4];
 		unsigned int deviceCount = 0;
