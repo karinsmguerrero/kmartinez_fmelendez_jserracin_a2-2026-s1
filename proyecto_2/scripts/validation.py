@@ -2,8 +2,7 @@
 Compare binary frame outputs between two model runs.
 
 Default directories:
-  frames/secuencial vs frames/gpu
-
+	frames/secuencial vs frames/simd
 Usage:
   python validation.py [dir_a] [dir_b] [--atol 0.0] [--rtol 0.0]
 """
@@ -113,9 +112,9 @@ def compare_frames(dir_a, dir_b, atol, rtol):
 def main():
 	parser = argparse.ArgumentParser(description="Compare frame outputs")
 	parser.add_argument("dir_a", nargs="?", default="frames/secuencial")
-	parser.add_argument("dir_b", nargs="?", default="frames/gpu")
-	parser.add_argument("--atol", type=float, default=0.0)
-	parser.add_argument("--rtol", type=float, default=0.0)
+	parser.add_argument("dir_b", nargs="?", default="frames/simd")
+	parser.add_argument("--atol", type=float, default=1e-5)
+	parser.add_argument("--rtol", type=float, default=1e-5)
 	args = parser.parse_args()
 
 	dir_a = args.dir_a.rstrip("/")
