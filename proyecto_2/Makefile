@@ -66,14 +66,14 @@ run-simd: build-simd
 perf: build build-simd
 	@echo "Running perf measurements ($(RUNS) runs each)..."
 	@mkdir -p $(RESULTS_DIR)
-	@echo "run,program,time_sec,cycles" > $(PERF_CSV)
+	@echo "run,program,time_sec" > $(PERF_CSV)
 	@for prog in $(TARGET) $(TARGET_SIMD); do \
 		for i in $(shell seq 1 $(RUNS)); do \
 			echo "Measuring $$prog (run $$i)..."; \
-			out=$$( (perf stat -x, -e cycles -- "$$prog") 2>&1 1>/dev/null ); \
-			time_sec=$$(echo "$$out" | awk -F, '$$1 ~ /seconds time elapsed/ {print $$2}'); \
-			cycles=$$(echo "$$out" | awk -F, '$$1 ~ /cycles/ {print $$2}'); \
-			echo "$$i,$$(basename $$prog),$${time_sec},$${cycles}" >> $(PERF_CSV); \
+			out=$$( (LANG=C perf stat -x, -e duration_time -- "$$prog") 2>&1 1>/dev/null ); \
+			dur_ns=$$(echo "$$out" | awk -F, '$$3=="duration_time" {print $$1; exit}'); \
+			time_sec=$$(awk 'BEGIN{ns='"$$dur_ns"'; if (ns=="" || ns=="<not counted>") {print ""} else {printf "%.9f", ns/1e9}}'); \
+			echo "$$i,$$(basename $$prog),$${time_sec}" >> $(PERF_CSV); \
 		done; \
 	done
 	@echo "Results written to $(PERF_CSV)"
