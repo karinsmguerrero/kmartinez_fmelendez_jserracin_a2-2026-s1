@@ -2,6 +2,9 @@
 CXX ?= g++
 CXXFLAGS = -Wall -Wextra -std=c++11 -ffp-contract=off -fno-fast-math -fexcess-precision=standard
 
+# Extra flags for SIMD sources (enable AVX2 and FMA, optimize)
+CXXFLAGS_SIMD = $(CXXFLAGS) -mavx2 -mfma -O3
+
 PYTHON ?= python3
 VISUALIZE = scripts/visualize.py
 VALIDATE = scripts/validation.py
@@ -14,6 +17,7 @@ NBODIES ?= 1000
 NSTEPS ?= 100
 NBSAVEFRAMES ?= 1
 NBVERBOSE ?= 0
+RUNS ?= 10
 
 CXXDEFS =
 ifdef NBODIES
@@ -32,6 +36,9 @@ endif
 BUILD_DIR = build
 LIBS_GPU = -lOpenCL
 
+RESULTS_DIR = results
+PERF_CSV = $(RESULTS_DIR)/perf_results.csv
+
 # Target for sequential version of the n-body simulation
 SRC = models/n-body.cpp
 
@@ -41,6 +48,35 @@ build: $(SRC)
 	@echo "Compiling $(SRC)..."
 	@mkdir -p $(BUILD_DIR)
 	@$(CXX) -o $(TARGET) $(SRC) $(CXXFLAGS) $(CXXDEFS)
+
+SRC_SIMD = models/cpu_simd.cpp
+TARGET_SIMD = $(BUILD_DIR)/cpu_simd
+
+build-simd: $(SRC_SIMD)
+	@echo "Compiling $(SRC_SIMD)..."
+	@mkdir -p $(BUILD_DIR)
+	@$(CXX) -o $(TARGET_SIMD) $(SRC_SIMD) $(CXXFLAGS_SIMD) $(CXXDEFS)
+
+run-simd: build-simd
+	@echo "Running $(TARGET_SIMD)..."
+	@./$(TARGET_SIMD)
+
+# Run perf measurements for sequential and SIMD builds
+.PHONY: perf
+perf: build build-simd
+	@echo "Running perf measurements ($(RUNS) runs each)..."
+	@mkdir -p $(RESULTS_DIR)
+	@echo "run,program,time_sec,cycles" > $(PERF_CSV)
+	@for prog in $(TARGET) $(TARGET_SIMD); do \
+		for i in $(shell seq 1 $(RUNS)); do \
+			echo "Measuring $$prog (run $$i)..."; \
+			out=$$( (perf stat -x, -e cycles -- "$$prog") 2>&1 1>/dev/null ); \
+			time_sec=$$(echo "$$out" | awk -F, '$$1 ~ /seconds time elapsed/ {print $$2}'); \
+			cycles=$$(echo "$$out" | awk -F, '$$1 ~ /cycles/ {print $$2}'); \
+			echo "$$i,$$(basename $$prog),$${time_sec},$${cycles}" >> $(PERF_CSV); \
+		done; \
+	done
+	@echo "Results written to $(PERF_CSV)"
 
 run: build
 	@echo "Running $(TARGET)..."
@@ -80,6 +116,6 @@ compare-frames:
 	@echo "Comparing frames..."
 	@$(VENV_PY) $(VALIDATE) $(COMPARE_ARGS)
 
-.PHONY: all build run build-gpu run-gpu run-both setup-venv run-visualize compare-frames
+.PHONY: all build run run-simd build-gpu run-gpu run-both setup-venv run-visualize compare-frames
 
 all: build build-gpu
