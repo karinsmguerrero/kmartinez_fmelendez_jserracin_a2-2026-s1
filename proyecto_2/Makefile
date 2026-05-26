@@ -1,6 +1,6 @@
 #General makefile for the project
 CXX ?= g++
-CXXFLAGS = -Wall -Wextra -std=c++11 -ffp-contract=off -fno-fast-math -fexcess-precision=standard
+CXXFLAGS = -Wall -Wextra -std=c++11 -fno-fast-math -fexcess-precision=standard
 
 # Extra flags for SIMD sources (enable AVX2 and FMA, optimize)
 CXXFLAGS_SIMD = $(CXXFLAGS) -mavx2 -mfma -O3
@@ -49,6 +49,11 @@ build: $(SRC)
 	@mkdir -p $(BUILD_DIR)
 	@$(CXX) -o $(TARGET) $(SRC) $(CXXFLAGS) $(CXXDEFS)
 
+run: build
+	@echo "Running $(TARGET)..."
+	@./$(TARGET)
+
+
 SRC_SIMD = models/cpu_simd.cpp
 TARGET_SIMD = $(BUILD_DIR)/cpu_simd
 
@@ -67,7 +72,7 @@ perf: build build-simd
 	@echo "Running perf measurements ($(RUNS) runs each)..."
 	@mkdir -p $(RESULTS_DIR)
 	@echo "run,program,time_sec" > $(PERF_CSV)
-	@for prog in $(TARGET) $(TARGET_SIMD); do \
+	@for prog in $(TARGET) $(TARGET_SIMD) $(TARGET_GPU); do \
 		for i in $(shell seq 1 $(RUNS)); do \
 			echo "Measuring $$prog (run $$i)..."; \
 			out=$$( (LANG=C perf stat -x, -e duration_time -- "$$prog") 2>&1 1>/dev/null ); \
@@ -77,10 +82,6 @@ perf: build build-simd
 		done; \
 	done
 	@echo "Results written to $(PERF_CSV)"
-
-run: build
-	@echo "Running $(TARGET)..."
-	@./$(TARGET)
 
 # Target for GPU version of the n-body simulation
 SRC_GPU = models/OpenCL/n-body_gpu.cpp
@@ -95,19 +96,6 @@ build-gpu: $(SRC_GPU)
 run-gpu: build-gpu
 	@echo "Running $(TARGET_GPU)..."
 	@./$(TARGET_GPU)
-
-perf-gpu: build-gpu
-	@echo "Running perf measurements for GPU version ($(RUNS) runs)..."
-	@mkdir -p $(RESULTS_DIR)
-	@echo "run,program,time_sec" >> $(PERF_CSV)
-	@for i in $(shell seq 1 $(RUNS)); do \
-		echo "Measuring $(TARGET_GPU) (run $$i)..."; \
-		out=$$( (LANG=C perf stat -x, -e duration_time -- "./$(TARGET_GPU)") 2>&1 1>/dev/null ); \
-		dur_ns=$$(echo "$$out" | awk -F, '$$3=="duration_time" {print $$1; exit}'); \
-		time_sec=$$(awk 'BEGIN{ns='"$$dur_ns"'; if (ns=="" || ns=="<not counted>") {print ""} else {printf "%.9f", ns/1e9}}'); \
-		echo "$$i,$(basename $(TARGET_GPU)),$${time_sec}" >> $(PERF_CSV); \
-	done
-	@echo "Results written to $(PERF_CSV)"	
 
 # Target to generate outputs for both models with the same params
 run-both: run run-gpu

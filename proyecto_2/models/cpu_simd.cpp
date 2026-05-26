@@ -409,16 +409,17 @@ void integrate_simd(BodySoA &bodies)
 
 static void prepare_frames_dir()
 {
-    if (!SAVE_FRAMES) return;
+	if (!SAVE_FRAMES)
+		return;
 
-    struct stat st;
-    if (stat("frames", &st) != 0)
-        mkdir("frames", 0755);
+	struct stat st;
+	if (stat("frames", &st) != 0)
+		mkdir("frames", 0755);
 
-    char cmd[256];
-    snprintf(cmd, sizeof(cmd), "rm -dr %s", kFramesDir);
-    (void)system(cmd);
-    mkdir(kFramesDir, 0755);
+	char cmd[256];
+	snprintf(cmd, sizeof(cmd), "rm -rf %s", kFramesDir);
+	(void)system(cmd);
+	mkdir(kFramesDir, 0755);
 }
 
 // --- Guardado de frame en archivo binario ------------------------------------
