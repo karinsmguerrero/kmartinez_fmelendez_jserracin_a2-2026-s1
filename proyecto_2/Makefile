@@ -94,7 +94,20 @@ build-gpu: $(SRC_GPU)
 
 run-gpu: build-gpu
 	@echo "Running $(TARGET_GPU)..."
-	@./$(TARGET_GPU)	
+	@./$(TARGET_GPU)
+
+perf-gpu: build-gpu
+	@echo "Running perf measurements for GPU version ($(RUNS) runs)..."
+	@mkdir -p $(RESULTS_DIR)
+	@echo "run,program,time_sec" >> $(PERF_CSV)
+	@for i in $(shell seq 1 $(RUNS)); do \
+		echo "Measuring $(TARGET_GPU) (run $$i)..."; \
+		out=$$( (LANG=C perf stat -x, -e duration_time -- "./$(TARGET_GPU)") 2>&1 1>/dev/null ); \
+		dur_ns=$$(echo "$$out" | awk -F, '$$3=="duration_time" {print $$1; exit}'); \
+		time_sec=$$(awk 'BEGIN{ns='"$$dur_ns"'; if (ns=="" || ns=="<not counted>") {print ""} else {printf "%.9f", ns/1e9}}'); \
+		echo "$$i,$(basename $(TARGET_GPU)),$${time_sec}" >> $(PERF_CSV); \
+	done
+	@echo "Results written to $(PERF_CSV)"	
 
 # Target to generate outputs for both models with the same params
 run-both: run run-gpu

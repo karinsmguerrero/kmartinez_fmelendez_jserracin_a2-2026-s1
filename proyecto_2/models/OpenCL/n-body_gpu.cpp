@@ -283,7 +283,8 @@ static void prepare_frames_dir()
 		mkdir("frames", 0755);
 
 	char cmd[256];
-	snprintf(cmd, sizeof(cmd), "rm -dr %s", kFramesDir);
+	// Use -rf to avoid interactive prompts when directory is write-protected
+	snprintf(cmd, sizeof(cmd), "rm -rf %s", kFramesDir);
 	(void)system(cmd);
 	mkdir(kFramesDir, 0755);
 }
@@ -548,10 +549,12 @@ void compute_accel(Body *bodies)
 		const char *programSource = s.c_str();
 		size_t length = s.size();
 		cl_int programResult;
+		fprintf(stderr, "[DEBUG] Creating program from source...\n"); fflush(stderr);
 		program = clCreateProgramWithSource(context, 1, &programSource, &length, &programResult);
 		check_result(programResult);
 
 		const char *buildOptions = "-cl-fp32-correctly-rounded-divide-sqrt";
+		fprintf(stderr, "[DEBUG] Building program with options '%s'...\n", buildOptions); fflush(stderr);
 		cl_int programBuildResult = clBuildProgram(program, 1, &device, buildOptions, nullptr, nullptr);
 		if (programBuildResult != CL_SUCCESS)
 		{
@@ -561,10 +564,11 @@ void compute_accel(Body *bodies)
 			std::string log(logLength, '\0');
 			cl_int logResult = clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, logLength, &log[0], nullptr);
 			check_result(logResult);
-			std::cerr << log << std::endl;
+			std::cerr << "[BUILD_ERROR] " << log << std::endl;
 			exit(1);
 		}
 
+		fprintf(stderr, "[DEBUG] Program built successfully. Creating kernel...\n"); fflush(stderr);
 		cl_int kernelResult;
 		kernel = clCreateKernel(program, "compute_accel", &kernelResult);
 		check_result(kernelResult);
