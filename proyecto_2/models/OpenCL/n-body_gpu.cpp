@@ -283,7 +283,7 @@ static void prepare_frames_dir()
 		mkdir("frames", 0755);
 
 	char cmd[256];
-	snprintf(cmd, sizeof(cmd), "rm -dr %s", kFramesDir);
+	snprintf(cmd, sizeof(cmd), "rm -rf %s", kFramesDir);
 	(void)system(cmd);
 	mkdir(kFramesDir, 0755);
 }

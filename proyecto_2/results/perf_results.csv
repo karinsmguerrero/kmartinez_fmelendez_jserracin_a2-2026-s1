@@ -34,3 +34,15 @@ run,program,time_sec
 8,build/n-body_gpu,0.128476151
 9,build/n-body_gpu,0.119463502
 10,build/n-body_gpu,0.114881296
+run,program,time_sec
+run,program,time_sec
+1,build/n-body_gpu,0.110087844
+2,build/n-body_gpu,0.108517827
+3,build/n-body_gpu,0.112282568
+4,build/n-body_gpu,0.105273464
+5,build/n-body_gpu,0.116648722
+6,build/n-body_gpu,0.111638395
+7,build/n-body_gpu,0.106918816
+8,build/n-body_gpu,0.111711938
+9,build/n-body_gpu,0.114685990
+10,build/n-body_gpu,0.109187364
