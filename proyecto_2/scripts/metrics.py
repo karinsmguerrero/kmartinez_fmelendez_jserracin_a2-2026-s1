@@ -99,7 +99,7 @@ def calcular_fila(program: str, times_sec, seq_times=None):
     else:
         sp = 1.0
 
-    eff = 0.0 if program == "n-body" else (float(sp) / PARALLEL_UNITS)
+    eff = 0.0 if program == "n-body" else (float(sp) / PARALLEL_UNITS) if program == "cpu_simd" else (float(sp) / 64) 
 
     return {
         "program":             program,

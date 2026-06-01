@@ -16,7 +16,7 @@ Controles:
     Q / Esc          — salir
 
 Uso:
-    python visualize.py [frames/secuencial]
+    python visualize.py [frames/gpu]
 """
 
 import glob
@@ -29,7 +29,7 @@ app.use_app("pyqt5")
 from vispy import scene
 
 # ── Cargar frames ────────────────────────────────────────────────────
-frames_dir = "frames/secuencial"
+frames_dir = "frames/gpu"
 if len(sys.argv) > 1:
     frames_dir = sys.argv[1].rstrip("/")
 

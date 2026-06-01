@@ -1,0 +1,2 @@
+  StartAddress   AddressRange  #Instructions  Ratio Linkage Visibility  Module                                                                                   Function     FunctionSignature
+        0x724a            147             39   3.77  unknown    unknown /home/karina/Documentos/TEC/Arqui_2/Proyectos/Proyecto 3/proyecto_2/build/n-b...         main         main        

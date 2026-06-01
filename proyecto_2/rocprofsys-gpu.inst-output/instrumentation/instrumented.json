@@ -1,0 +1,77 @@
+{
+ "rocprofsys": {
+  "instrumented_module_functions": {
+   "module_functions": [
+    {
+     "cereal_class_version": 0,
+     "start_address": "0x724a",
+     "address_range": 147,
+     "num_instructions": 39,
+     "module": "/home/karina/Documentos/TEC/Arqui_2/Proyectos/Proyecto 3/proyecto_2/build/n-body_gpu",
+     "function": "main",
+     "signature": {
+      "cereal_class_version": 0,
+      "loop": false,
+      "info_beg": false,
+      "info_end": false,
+      "row": {
+       "first": 0,
+       "second": 0
+      },
+      "col": {
+       "first": 0,
+       "second": 0
+      },
+      "return": "",
+      "name": "main",
+      "params": "()",
+      "file": "n-body_gpu",
+      "signature": "main"
+     },
+     "linkage": "unknown",
+     "visibility": "unknown",
+     "num_basic_blocks": 13,
+     "num_outer_loops": 1,
+     "heuristics": {
+      "should_instrument": false,
+      "should_coverage_instrument": false,
+      "is_instrumentable": true,
+      "can_instrument_entry": true,
+      "can_instrument_exit": true,
+      "contains_dynamic_callsites": false,
+      "is_internal_constrained": true,
+      "is_module_constrained": false,
+      "is_routine_constrained": false,
+      "is_user_restricted": false,
+      "is_user_included": false,
+      "contains_user_callsite": false,
+      "is_user_excluded": false,
+      "is_overlapping_constrained": false,
+      "is_entry_trap_constrained": false,
+      "is_exit_trap_constrained": false,
+      "is_dynamic_callsite_forced": false,
+      "is_linkage_constrained": false,
+      "is_visibility_constrained": false,
+      "is_address_range_constrained": true,
+      "is_num_instructions_constrained": true,
+      "is_instruction_constrained": false,
+      "is_loop_address_range_constrained": true,
+      "is_loop_num_instructions_constrained": true
+     },
+     "instruction_breakdown": {
+      "function_call": 8,
+      "return": 1,
+      "branch": 3,
+      "compare": 2,
+      "prefetch": 0,
+      "sys_enter": 0,
+      "sys_call": 0,
+      "vector": 0,
+      "gpu_kernel_exit": 0,
+      "no_category": 25
+     }
+    }
+   ]
+  }
+ }
+}

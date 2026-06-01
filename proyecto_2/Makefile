@@ -13,8 +13,8 @@ VENV_PY = $(VENV)/bin/python
 REQS = requirements.txt
 COMPARE_ARGS ?=
 
-NBODIES ?= 1000
-NSTEPS ?= 100
+NBODIES ?= 30000
+NSTEPS ?= 200
 NBSAVEFRAMES ?= 1
 NBVERBOSE ?= 0
 RUNS ?= 10
@@ -119,4 +119,4 @@ compare-frames:
 
 .PHONY: all build run run-simd build-gpu run-gpu run-both setup-venv run-visualize compare-frames
 
-all: build build-gpu
+all: build build-gpu build-simd
