@@ -59,7 +59,7 @@ def speedup_gm(seq, other):
 # GUARDAR RESULTADOS
 # =========================
 
-OUTPUT_PATH = Path(__file__).resolve().parent.parent / "results" / "resultados.csv"
+OUTPUT_PATH = Path(__file__).resolve().parent.parent / "results" / "resultados_nbodies.csv"
 
 FIELDNAMES = [
     "nbodies",
@@ -142,3 +142,16 @@ if __name__ == "__main__":
                     seq_times=seq_times,
                 )
             )
+            
+    with open(OUTPUT_PATH, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        writer.writeheader()
+        writer.writerows(filas)
+
+    print(f"Resultados guardados en: {OUTPUT_PATH}")
+    for f in filas:
+        print(
+            f"  {f['program']:14s}  "
+            f"AM={f['media_aritmetica']:.6f}s  "
+            f"SpeedUp={f['SpeedUp']}"
+        )
