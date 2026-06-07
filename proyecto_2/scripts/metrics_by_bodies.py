@@ -12,31 +12,20 @@ from scipy import stats
 CSV_PATH = Path(__file__).resolve().parent.parent / "results" / "perf_results.csv"
 
 def load_csv(path: Path):
-    """Lee `perf_results.csv`.
-
-    Espera columnas: run, program, time_sec
-
-    Devuelve: dict[str, list[float]] donde la llave es `program` y el valor
-    es una lista de tiempos (segundos).
-    """
-
-    grupos: dict[str, list[float]] = defaultdict(list)
+    grupos = defaultdict(lambda: defaultdict(list))
 
     with open(path, newline="") as f:
         reader = csv.DictReader(f)
+
         for row in reader:
-            prog = (row.get("program") or "").strip()
-            t = (row.get("time_sec") or "").strip()
-
-            if not prog:
-                continue
-            if not t:
-                continue
-
             try:
-                grupos[prog].append(float(t))
-            except ValueError:
+                nbodies = int(row["nbodies"])
+                program = row["program"].strip()
+                time_sec = float(row["time_sec"])
+            except (KeyError, ValueError):
                 continue
+
+            grupos[nbodies][program].append(time_sec)
 
     return grupos
 
@@ -73,6 +62,7 @@ def speedup_gm(seq, other):
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "results" / "resultados.csv"
 
 FIELDNAMES = [
+    "nbodies",
     "program",
     "media_aritmetica",
     "mediana",
@@ -85,7 +75,7 @@ FIELDNAMES = [
 
 PARALLEL_UNITS = 8 # esto es solo para el de simd, hay que ver despues como se hace para el de gpu
 
-def calcular_fila(program: str, times_sec, seq_times=None):
+def calcular_fila(nbodies, program: str, times_sec, seq_times=None):
     times_sec = np.array(times_sec, dtype=float)
     am = arithmetic_mean(times_sec)
     med = median(times_sec)
@@ -102,6 +92,7 @@ def calcular_fila(program: str, times_sec, seq_times=None):
     eff = 0.0 if program == "n-body" else (float(sp) / PARALLEL_UNITS) if program == "cpu_simd" else (float(sp) / 256) 
 
     return {
+        "nbodies": nbodies,
         "program":             program,
         "media_aritmetica":    round(float(am), 9),
         "mediana":             round(float(med), 9),
@@ -117,32 +108,37 @@ def calcular_fila(program: str, times_sec, seq_times=None):
 # =========================
 
 if __name__ == "__main__":
-    grupos = load_csv(CSV_PATH)
+    datos = load_csv(CSV_PATH)
 
-    # Baseline: secuencial
-    seq_times = grupos.get("n-body", [])
-    if not seq_times:
-        raise SystemExit(
-            f"No se encontraron datos para 'n-body' en {CSV_PATH}. "
-            "Este es el baseline para calcular SpeedUp."
+    filas = []
+
+    for nbodies in sorted(datos.keys()):
+
+        grupos = datos[nbodies]
+
+        seq_times = grupos.get("n-body", [])
+        if not seq_times:
+            print(f"Advertencia: no hay baseline para {nbodies}")
+            continue
+
+        prefer_order = ["n-body", "cpu_simd", "build/n-body_gpu"]
+
+        programs = list(grupos.keys())
+        programs.sort(
+            key=lambda p: (
+                prefer_order.index(p)
+                if p in prefer_order
+                else 999,
+                p,
+            )
         )
 
-    # Orden explícito de interés
-    prefer_order = ["n-body", "cpu_simd", "build/n-body_gpu"]
-    programs = list(grupos.keys())
-    programs.sort(key=lambda p: (prefer_order.index(p) if p in prefer_order else 999, p))
-
-    filas = [calcular_fila(p, grupos[p], seq_times=seq_times) for p in programs]
-
-    with open(OUTPUT_PATH, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
-        writer.writeheader()
-        writer.writerows(filas)
-
-    print(f"Resultados guardados en: {OUTPUT_PATH}")
-    for f in filas:
-        print(
-            f"  {f['program']:14s}  "
-            f"AM={f['media_aritmetica']:.6f}s  "
-            f"SpeedUp={f['SpeedUp']}"
-        )
+        for program in programs:
+            filas.append(
+                calcular_fila(
+                    nbodies,
+                    program,
+                    grupos[program],
+                    seq_times=seq_times,
+                )
+            )

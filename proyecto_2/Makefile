@@ -12,12 +12,11 @@ VENV ?= .venv
 VENV_PY = $(VENV)/bin/python
 REQS = requirements.txt
 COMPARE_ARGS ?=
-
-NBODIES ?= 30000
-NSTEPS ?= 200
+NBODIES ?= 14000
+NSTEPS ?= 100
 NBSAVEFRAMES ?= 1
 NBVERBOSE ?= 0
-RUNS ?= 10
+RUNS ?= 60
 
 CXXDEFS =
 ifdef NBODIES
@@ -38,6 +37,7 @@ LIBS_GPU = -lOpenCL
 
 RESULTS_DIR = results
 PERF_CSV = $(RESULTS_DIR)/perf_results.csv
+PERF_GPU_CSV = $(RESULTS_DIR)/perf_results_$(NBODIES).csv
 
 # Target for sequential version of the n-body simulation
 SRC = models/n-body.cpp
@@ -66,21 +66,34 @@ run-simd: build-simd
 	@echo "Running $(TARGET_SIMD)..."
 	@./$(TARGET_SIMD)
 
-# Run perf measurements for sequential and SIMD builds
+# Run perf measurements for sequential, SIMD and GPU builds
 .PHONY: perf
-perf: build build-simd
+perf:
 	@echo "Running perf measurements ($(RUNS) runs each)..."
 	@mkdir -p $(RESULTS_DIR)
-	@echo "run,program,time_sec" > $(PERF_CSV)
-	@for prog in $(TARGET) $(TARGET_SIMD) $(TARGET_GPU); do \
-		for i in $(shell seq 1 $(RUNS)); do \
-			echo "Measuring $$prog (run $$i)..."; \
-			out=$$( (LANG=C perf stat -x, -e duration_time -- "$$prog") 2>&1 1>/dev/null ); \
-			dur_ns=$$(echo "$$out" | awk -F, '$$3=="duration_time" {print $$1; exit}'); \
-			time_sec=$$(awk 'BEGIN{ns='"$$dur_ns"'; if (ns=="" || ns=="<not counted>") {print ""} else {printf "%.9f", ns/1e9}}'); \
-			echo "$$i,$$(basename $$prog),$${time_sec}" >> $(PERF_CSV); \
+	@echo "nbodies,run,program,time_sec" > $(PERF_CSV)
+
+	@for n in 10000 12000 14000 16000 18000 20000; do \
+		echo ""; \
+		echo "========================================"; \
+		echo "NBODIES=$$n"; \
+		echo "========================================"; \
+		\
+		$(MAKE) build NBODIES=$$n; \
+		$(MAKE) build-simd NBODIES=$$n; \
+		$(MAKE) build-gpu NBODIES=$$n; \
+		\
+		for prog in $(TARGET) $(TARGET_SIMD) $(TARGET_GPU); do \
+			for i in $(shell seq 1 $(RUNS)); do \
+				echo "Measuring $$prog (NBODIES=$$n, run $$i)..."; \
+				out=$$( (LANG=C perf stat -x, -e duration_time -- "$$prog") 2>&1 1>/dev/null ); \
+				dur_ns=$$(echo "$$out" | awk -F, '$$3=="duration_time" {print $$1; exit}'); \
+				time_sec=$$(awk 'BEGIN{ns='"$$dur_ns"'; if (ns=="" || ns=="<not counted>") {print ""} else {printf "%.9f", ns/1e9}}'); \
+				echo "$$n,$$i,$$(basename $$prog),$${time_sec}" >> $(PERF_CSV); \
+			done; \
 		done; \
 	done
+
 	@echo "Results written to $(PERF_CSV)"
 
 # Target for GPU version of the n-body simulation
@@ -97,6 +110,10 @@ run-gpu: build-gpu
 	@echo "Running $(TARGET_GPU)..."
 	@./$(TARGET_GPU)
 
+run-profile: build-gpu
+	@rocprof-sys-sample --gpus 0 --G L2CacheHit GL2C_MISS GL2C_MISS_sum GPUBusy GRBM_COUNT \
+	LdsLatency MeanOccupancyPerActiveCU MeanOccupancyPerCU OccupancyPercent SQ_WAVE_CYCLES \
+	Wavefronts --realtime 0 --output "/home/karina/Documentos/TEC/Arqui_2/Proyectos/Proyecto 3/proyecto_2/profiling/results" n_body_gpu_$(NBODIES) -- build/n-body_gpu
 # Target to generate outputs for both models with the same params
 run-both: run run-gpu
 
