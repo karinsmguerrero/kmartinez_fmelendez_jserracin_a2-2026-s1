@@ -84,7 +84,8 @@ FIELDNAMES = [
     "Eficiencia",
 ]
 
-PARALLEL_UNITS = 8 # esto es solo para el de simd, hay que ver despues como se hace para el de gpu
+PARALLEL_UNITS = 8 # simd
+GPU_PARALLEL_UNITS = 64 # gpu
 
 def calcular_fila(program: str, times_sec, seq_times=None):
     times_sec = np.array(times_sec, dtype=float)
@@ -100,7 +101,7 @@ def calcular_fila(program: str, times_sec, seq_times=None):
     else:
         sp = 1.0
 
-    eff = 0.0 if program == "n-body" else (float(sp) / PARALLEL_UNITS)
+    eff = 0.0 if program == "n-body" else (float(sp) / PARALLEL_UNITS) if program == "cpu_simd" else (float(sp) / GPU_PARALLEL_UNITS) 
 
     return {
         "program":             program,
