@@ -20,21 +20,21 @@ def load_csv(path: Path):
     es una lista de tiempos (segundos).
     """
 
-    grupos: dict[str, list[float]] = defaultdict(list)
+    # grupos[(program, nbodies)] -> [times]
+    grupos: dict[tuple, list[float]] = defaultdict(list)
 
     with open(path, newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             prog = (row.get("program") or "").strip()
             t = (row.get("time_sec") or "").strip()
+            nb = (row.get("nbodies") or "").strip()
 
-            if not prog:
-                continue
-            if not t:
+            if not prog or not t or not nb:
                 continue
 
             try:
-                grupos[prog].append(float(t))
+                grupos[(prog, int(nb))].append(float(t))
             except ValueError:
                 continue
 
@@ -74,6 +74,7 @@ OUTPUT_PATH = Path(__file__).resolve().parent.parent / "results" / "resultados.c
 
 FIELDNAMES = [
     "program",
+    "nbodies",
     "media_aritmetica",
     "mediana",
     "desviacion_estandar",
@@ -119,20 +120,34 @@ def calcular_fila(program: str, times_sec, seq_times=None):
 if __name__ == "__main__":
     grupos = load_csv(CSV_PATH)
 
-    # Baseline: secuencial
-    seq_times = grupos.get("n-body", [])
-    if not seq_times:
+    seq_map = {}
+    for (prog, nb), times in grupos.items():
+        if prog == "n-body":
+            seq_map[nb] = times
+
+    if not seq_map:
         raise SystemExit(
             f"No se encontraron datos para 'n-body' en {CSV_PATH}. "
-            "Este es el baseline para calcular SpeedUp."
+            "Necesitamos al menos una entrada secuencial por cada nbodies para calcular SpeedUp."
         )
 
-    # Orden explícito de interés
     prefer_order = ["n-body", "cpu_simd", "build/n-body_gpu"]
-    programs = list(grupos.keys())
-    programs.sort(key=lambda p: (prefer_order.index(p) if p in prefer_order else 999, p))
+    keys = list(grupos.keys())
+    def keyfn(item):
+        prog, nb = item
+        return (prefer_order.index(prog) if prog in prefer_order else 999, prog, nb)
 
-    filas = [calcular_fila(p, grupos[p], seq_times=seq_times) for p in programs]
+    keys.sort(key=keyfn)
+
+    filas = []
+    for prog, nb in keys:
+        times = grupos.get((prog, nb), [])
+        if not times:
+            continue
+        seq_times = seq_map.get(nb)
+        fila = calcular_fila(prog, times, seq_times=seq_times)
+        fila["nbodies"] = nb
+        filas.append(fila)
 
     with open(OUTPUT_PATH, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
@@ -142,7 +157,5 @@ if __name__ == "__main__":
     print(f"Resultados guardados en: {OUTPUT_PATH}")
     for f in filas:
         print(
-            f"  {f['program']:14s}  "
-            f"AM={f['media_aritmetica']:.6f}s  "
-            f"SpeedUp={f['SpeedUp']}"
+            f"  {f['program']:20s} nb={f['nbodies']:6d}  AM={f['media_aritmetica']:.6f}s  SpeedUp={f['SpeedUp']}"
         )

@@ -24,7 +24,7 @@
 #include <vector>
 
 #ifndef NBODIES
-#define NBODIES 1000
+#define NBODIES 20000
 #endif
 
 #ifndef NSTEPS
