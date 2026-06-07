@@ -1,0 +1,233 @@
+[
+  {
+    "Name": "Thread Peak Memory Usage [0] (S)",
+    "Delta value": "0",
+    "Rate /s": "0",
+    "Weighted avg value": "0",
+    "Count": "2",
+    "First value": "0",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "0"
+  },
+  {
+    "Name": "Thread Page Faults [0] (S)",
+    "Delta value": "-1",
+    "Rate /s": "-3.34",
+    "Weighted avg value": "0.47",
+    "Count": "5",
+    "First value": "2",
+    "Last value": "1",
+    "Min value": "1",
+    "Max value": "2"
+  },
+  {
+    "Name": "Thread Context Switches [0] (S)",
+    "Delta value": "4",
+    "Rate /s": "13.37",
+    "Weighted avg value": "2.97",
+    "Count": "24",
+    "First value": "11",
+    "Last value": "15",
+    "Min value": "8",
+    "Max value": "16"
+  },
+  {
+    "Name": "Thread CPU time [0] (S)",
+    "Delta value": "0",
+    "Rate /s": "0",
+    "Weighted avg value": "0",
+    "Count": "2",
+    "First value": "0",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "0"
+  },
+  {
+    "Name": "GPU Wavefronts [0]",
+    "Delta value": "-256",
+    "Rate /s": "-855.88",
+    "Weighted avg value": "880.28",
+    "Count": "202",
+    "First value": "256",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "63072"
+  },
+  {
+    "Name": "GPU UMC Busy [0] (S)",
+    "Delta value": "0",
+    "Rate /s": "0",
+    "Weighted avg value": "0.94",
+    "Count": "9",
+    "First value": "1",
+    "Last value": "1",
+    "Min value": "0",
+    "Max value": "4"
+  },
+  {
+    "Name": "GPU Temperature [0] (S)",
+    "Delta value": "15",
+    "Rate /s": "50.15",
+    "Weighted avg value": "45.15",
+    "Count": "20",
+    "First value": "40",
+    "Last value": "55",
+    "Min value": "40",
+    "Max value": "55"
+  },
+  {
+    "Name": "GPU SQ_WAVE_CYCLES [0]",
+    "Delta value": "-700513960",
+    "Rate /s": "-2342018425.53",
+    "Weighted avg value": "283525775.7",
+    "Count": "202",
+    "First value": "700513960",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "837906119"
+  },
+  {
+    "Name": "GPU OccupancyPercent [0]",
+    "Delta value": "-23.737076607033867",
+    "Rate /s": "-79.36",
+    "Weighted avg value": "9.67",
+    "Count": "202",
+    "First value": "23.737076607033867",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "28.13635597062183"
+  },
+  {
+    "Name": "GPU Memory Usage [0] (S)",
+    "Delta value": "171.39302399999997",
+    "Rate /s": "573.02",
+    "Weighted avg value": "1238.01",
+    "Count": "8",
+    "First value": "1210.974208",
+    "Last value": "1382.367232",
+    "Min value": "1210.974208",
+    "Max value": "1382.37952"
+  },
+  {
+    "Name": "GPU MeanOccupancyPerCU [0]",
+    "Delta value": "-7.595864514250837",
+    "Rate /s": "-25.4",
+    "Weighted avg value": "3.1",
+    "Count": "202",
+    "First value": "7.595864514250837",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "9.003633910598985"
+  },
+  {
+    "Name": "GPU MeanOccupancyPerActiveCU [0]",
+    "Delta value": "-15.623033025742275",
+    "Rate /s": "-52.23",
+    "Weighted avg value": "6.32",
+    "Count": "202",
+    "First value": "15.623033025742275",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "18.285829565441166"
+  },
+  {
+    "Name": "GPU MM Busy [0] (S)",
+    "Delta value": "0",
+    "Rate /s": "0",
+    "Weighted avg value": "0",
+    "Count": "2",
+    "First value": "0",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "0"
+  },
+  {
+    "Name": "GPU LdsLatency [0]",
+    "Delta value": "0",
+    "Rate /s": "0",
+    "Weighted avg value": "0",
+    "Count": "2",
+    "First value": "0",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "0"
+  },
+  {
+    "Name": "GPU L2CacheHit [0]",
+    "Delta value": "-68.23614632379572",
+    "Rate /s": "-228.13",
+    "Weighted avg value": "27.22",
+    "Count": "202",
+    "First value": "68.23614632379572",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "68.23614632379572"
+  },
+  {
+    "Name": "GPU GRBM_COUNT [0]",
+    "Delta value": "-2881971",
+    "Rate /s": "-9635252.93",
+    "Weighted avg value": "1153369.69",
+    "Count": "202",
+    "First value": "2881971",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "2908222"
+  },
+  {
+    "Name": "GPU GL2C_MISS_sum [0]",
+    "Delta value": "-1754",
+    "Rate /s": "-5864.12",
+    "Weighted avg value": "1295.7",
+    "Count": "202",
+    "First value": "1754",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "49475"
+  },
+  {
+    "Name": "GPU GL2C_MISS [0]",
+    "Delta value": "-1754",
+    "Rate /s": "-5864.12",
+    "Weighted avg value": "1295.7",
+    "Count": "202",
+    "First value": "1754",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "49475"
+  },
+  {
+    "Name": "GPU GFX Busy [0] (S)",
+    "Delta value": "76",
+    "Rate /s": "254.09",
+    "Weighted avg value": "56.6",
+    "Count": "25",
+    "First value": "0",
+    "Last value": "76",
+    "Min value": "0",
+    "Max value": "96"
+  },
+  {
+    "Name": "GPU Current Power [0] (S)",
+    "Delta value": "0",
+    "Rate /s": "0",
+    "Weighted avg value": "59078.79",
+    "Count": "2",
+    "First value": "65535",
+    "Last value": "65535",
+    "Min value": "65535",
+    "Max value": "65535"
+  },
+  {
+    "Name": "",
+    "Delta value": "-100",
+    "Rate /s": "-334.33",
+    "Weighted avg value": "40.3",
+    "Count": "202",
+    "First value": "100",
+    "Last value": "0",
+    "Min value": "0",
+    "Max value": "100"
+  }
+]
