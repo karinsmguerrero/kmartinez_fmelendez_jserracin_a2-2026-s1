@@ -10,6 +10,24 @@ Visualizacion
 
 Dependencias Python: requirements.txt
 
+Perfilado de CPU para vectorización
+-------------
+
+1) Instalar Intel VTune Profiler
+```bash
+    sudo apt install intel-vtune-profiler
+
+
+2) Compilar el proyecto con instrumentación para VTune
+```bash
+    source /opt/intel/oneapi/vtune/latest/vtune-vars.sh
+    icx -g -O2 -qopenmp -fveclib -o build/n-body models/cpu_simd.cpp
+```
+2) Ejecutar el perfilado
+```bash
+    vtune-profiler -collect hotspots -- ./build/n-body
+```
+
 Perfilado de GPU
 -------------
 1) Instalar ROCm
