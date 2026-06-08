@@ -283,7 +283,7 @@ static void prepare_frames_dir()
 		mkdir("frames", 0755);
 
 	char cmd[256];
-	snprintf(cmd, sizeof(cmd), "rm -dr %s", kFramesDir);
+	snprintf(cmd, sizeof(cmd), "rm -rf %s", kFramesDir);
 	(void)system(cmd);
 	mkdir(kFramesDir, 0755);
 }
@@ -651,7 +651,7 @@ void compute_accel(Body *bodies)
 	check_result(clSetKernelArg(kernel, 8, sizeof(float), &g));
 	check_result(clSetKernelArg(kernel, 9, sizeof(float), &softening));
 
-	const size_t localWorkSize = 64;
+	const size_t localWorkSize = 256;
 	size_t globalWorkSize = ((static_cast<size_t>(N) + localWorkSize - 1) / localWorkSize) * localWorkSize;
 	check_result(clEnqueueNDRangeKernel(queue, kernel, 1, nullptr, &globalWorkSize, &localWorkSize, 0, nullptr, nullptr));
 

@@ -1,0 +1,107 @@
+threads_spec: cpu
+Using CPUID GenuineIntel-6-9A-3
+DEBUGINFOD_URLS=
+Compression enabled, disabling build id collection at the end of the session.
+nr_threads: 8
+thread_masks[0]: 0x621b3d766ab0: maps mask[12]: 0
+thread_masks[0]: 0x621b3d766ac0: affinity mask[12]: 0
+thread_masks[1]: 0x621b3d766ad0: maps mask[12]: 2
+thread_masks[1]: 0x621b3d766ae0: affinity mask[12]: 2
+thread_masks[2]: 0x621b3d766af0: maps mask[12]: 4
+thread_masks[2]: 0x621b3d766b00: affinity mask[12]: 4
+thread_masks[3]: 0x621b3d766b10: maps mask[12]: 6
+thread_masks[3]: 0x621b3d766b20: affinity mask[12]: 6
+thread_masks[4]: 0x621b3d766b30: maps mask[12]: 8
+thread_masks[4]: 0x621b3d766b40: affinity mask[12]: 8
+thread_masks[5]: 0x621b3d766b50: maps mask[12]: 9
+thread_masks[5]: 0x621b3d766b60: affinity mask[12]: 9
+thread_masks[6]: 0x621b3d766b70: maps mask[12]: 10
+thread_masks[6]: 0x621b3d766b80: affinity mask[12]: 10
+thread_masks[7]: 0x621b3d766b90: maps mask[12]: 11
+thread_masks[7]: 0x621b3d766ba0: affinity mask[12]: 11
+nr_cblocks: 0
+affinity: SYS
+mmap flush: 1
+comp level: 1
+mmap size 528384B
+couldn't open /proc/1/task/1/maps
+couldn't open /proc/374/task/374/maps
+couldn't open /proc/433/task/433/maps
+couldn't open /proc/816/task/816/maps
+couldn't open /proc/817/task/817/maps
+couldn't open /proc/818/task/818/maps
+couldn't open /proc/912/task/912/maps
+couldn't open /proc/914/task/914/maps
+couldn't open /proc/922/task/922/maps
+couldn't open /proc/935/task/935/maps
+couldn't open /proc/941/task/941/maps
+couldn't open /proc/962/task/962/maps
+couldn't open /proc/968/task/968/maps
+couldn't open /proc/973/task/973/maps
+couldn't open /proc/976/task/976/maps
+couldn't open /proc/985/task/985/maps
+couldn't open /proc/988/task/988/maps
+couldn't open /proc/991/task/991/maps
+couldn't open /proc/1037/task/1037/maps
+couldn't open /proc/1044/task/1044/maps
+couldn't open /proc/1103/task/1103/maps
+couldn't open /proc/1197/task/1197/maps
+couldn't open /proc/1209/task/1209/maps
+couldn't open /proc/1243/task/1243/maps
+couldn't open /proc/1331/task/1331/maps
+couldn't open /proc/1339/task/1339/maps
+couldn't open /proc/1352/task/1352/maps
+couldn't open /proc/1364/task/1364/maps
+couldn't open /proc/1391/task/1391/maps
+couldn't open /proc/1441/task/1441/maps
+couldn't open /proc/1677/task/1677/maps
+couldn't open /proc/2051/task/2051/maps
+couldn't open /proc/2088/task/2088/maps
+couldn't open /proc/2089/task/2089/maps
+couldn't open /proc/2095/task/2095/maps
+couldn't open /proc/2098/task/2098/maps
+couldn't open /proc/2104/task/2104/maps
+couldn't open /proc/2590/task/2590/maps
+couldn't open /proc/2595/task/2595/maps
+couldn't open /proc/2660/task/2660/maps
+couldn't open /proc/2661/task/2661/maps
+couldn't open /proc/2753/task/2753/maps
+couldn't open /proc/2759/task/2759/maps
+couldn't open /proc/2781/task/2781/maps
+couldn't open /proc/2785/task/2785/maps
+couldn't open /proc/2789/task/2789/maps
+couldn't open /proc/3152/task/3152/maps
+couldn't open /proc/3156/task/3156/maps
+couldn't open /proc/3242/task/3242/maps
+couldn't open /proc/26264/task/26264/maps
+couldn't open /proc/26265/task/26265/maps
+couldn't open /proc/26819/task/26819/maps
+couldn't open /proc/35257/task/35257/maps
+couldn't open /proc/35280/task/35280/maps
+couldn't open /proc/35331/task/35331/maps
+couldn't open /proc/35338/task/35338/maps
+couldn't open /proc/35353/task/35353/maps
+couldn't open /proc/35360/task/35360/maps
+couldn't open /proc/35374/task/35374/maps
+couldn't open /proc/48111/task/48111/maps
+threads[48374]: started on cpu2
+threads[48375]: started on cpu4
+threads[48376]: started on cpu6
+threads[48377]: started on cpu8
+threads[48378]: started on cpu9
+threads[48379]: started on cpu10
+threads[48380]: started on cpu11
+threads[48372]: started on cpu0
+
+48373:perf-sync:ready:TSC=378023536205909
+[ perf record: Woken up 3 times to write data ]
+threads[48372]: samples=3, wakes=2, transferred=279264, compressed=34552
+threads[48374]: samples=1, wakes=2, transferred=184832, compressed=28262
+threads[48375]: samples=3, wakes=3, transferred=492216, compressed=61894
+threads[48376]: samples=3, wakes=2, transferred=201040, compressed=33617
+threads[48377]: samples=1, wakes=2, transferred=107712, compressed=21562
+threads[48378]: samples=1, wakes=2, transferred=86656, compressed=18306
+threads[48379]: samples=1, wakes=2, transferred=87872, compressed=17545
+threads[48380]: samples=3, wakes=2, transferred=76768, compressed=16370
+failed to write feature CPU_PMU_CAPS
+[ perf record: Captured and wrote 8.713 MB /home/fabs/Github/kmartinez_fmelendez_jserracin_a2-2026-s1/proyecto_2/models/r000hpc/data.0/system-wide.perf, compressed (original 1.446 MB, ratio is 6.533) ]

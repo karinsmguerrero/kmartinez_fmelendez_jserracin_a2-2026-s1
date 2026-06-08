@@ -1,0 +1,60 @@
+Elapsed Time: 0.901s
+    SP GFLOPS: 13.358
+    DP GFLOPS: 0.000
+    x87 GFLOPS: 0.000
+    CPI Rate: 0.340
+    Average CPU Frequency: 1.477 GHz
+    Total Thread Count: 6
+Effective CPU Utilization: 12.2%
+ | The metric value is low, which may signal a poor logical CPU cores
+ | utilization caused by load imbalance, threading runtime overhead, contended
+ | synchronization, or thread/process underutilization. Explore sub-metrics to
+ | estimate the efficiency of MPI and OpenMP parallelism or run the Locks and
+ | Waits analysis to identify parallel bottlenecks for other parallel runtimes.
+ |
+    Average Effective CPU Utilization: 0.975 out of 8
+Memory Bound: 0.6% of Pipeline Slots
+    Performance-core (P-core)
+        Memory Bound: 0.6% of Pipeline Slots
+            Cache Bound: 0.7% of Clockticks
+            DRAM Bound: 0.0% of Clockticks
+    Efficient-core (E-core)
+        Memory Bound: 0.0% of Clockticks
+            Cache Bound: 0.0% of Clockticks
+
+    Bandwidth Utilization
+    Bandwidth Domain  Platform Maximum  Observed Maximum  Average  % of Elapsed Time with High BW Utilization(%)
+    ----------------  ----------------  ----------------  -------  ---------------------------------------------
+    DRAM, GB/sec      17                          10.800    5.218                                           0.0%
+Vectorization: 100.0% of Packed FP Operations
+    Instruction Mix
+        SP FLOPs: 33.9% of uOps
+            Packed: 100.0% from SP FP
+                128-bit: 0.0% from SP FP
+                256-bit: 100.0% from SP FP
+            Scalar: 0.0% from SP FP
+        DP FLOPs: 0.0% of uOps
+            Packed: 0.0% from DP FP
+                128-bit: 0.0% from DP FP
+                256-bit: 0.0% from DP FP
+            Scalar: 0.0% from DP FP
+        x87 FLOPs: 0.0% of uOps
+        Non-FP: 66.1% of uOps
+Collection and Platform Info
+    Application Command Line: ./cpu_simd 
+    Operating System: 6.17.0-23-generic DISTRIB_ID=Ubuntu DISTRIB_RELEASE=24.04 DISTRIB_CODENAME=noble DISTRIB_DESCRIPTION="Ubuntu 24.04.1 LTS"
+    Computer Name: Fabs-Computer
+    Result Size: 15.7 MB 
+    Collection start time: 22:18:49 03/06/2026 UTC
+    Collection stop time: 22:18:50 03/06/2026 UTC
+    Collector Type: Driverless Perf system-wide sampling
+    CPU
+        Name: Intel(R) microarchitecture code named Alderlake-P
+        Frequency: 2.496 GHz
+        Logical CPU Count: 8
+        Max DRAM Single-Package Bandwidth: 17.000 GB/s
+
+If you want to skip descriptions of detected performance issues in the report,
+enter: vtune -report summary -report-knob show-issues=false -r <my_result_dir>.
+Alternatively, you may view the report in the csv format: vtune -report
+<report_name> -format=csv.

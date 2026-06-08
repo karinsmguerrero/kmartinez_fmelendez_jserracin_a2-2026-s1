@@ -1,5 +1,7 @@
 #General makefile for the project
 CXX ?= g++
+
+# todas usar esto 
 CXXFLAGS = -Wall -Wextra -std=c++11 -ffp-contract=off -fno-fast-math -fexcess-precision=standard
 
 # Extra flags for SIMD sources (enable AVX2 and FMA, optimize)
@@ -66,14 +68,14 @@ run-simd: build-simd
 perf: build build-simd
 	@echo "Running perf measurements ($(RUNS) runs each)..."
 	@mkdir -p $(RESULTS_DIR)
-	@echo "run,program,time_sec" > $(PERF_CSV)
+	@if [ ! -s "$(PERF_CSV)" ]; then echo "run,program,nbodies,time_sec" > "$(PERF_CSV)"; fi
 	@for prog in $(TARGET) $(TARGET_SIMD); do \
 		for i in $(shell seq 1 $(RUNS)); do \
 			echo "Measuring $$prog (run $$i)..."; \
 			out=$$( (LANG=C perf stat -x, -e duration_time -- "$$prog") 2>&1 1>/dev/null ); \
 			dur_ns=$$(echo "$$out" | awk -F, '$$3=="duration_time" {print $$1; exit}'); \
 			time_sec=$$(awk 'BEGIN{ns='"$$dur_ns"'; if (ns=="" || ns=="<not counted>") {print ""} else {printf "%.9f", ns/1e9}}'); \
-			echo "$$i,$$(basename $$prog),$${time_sec}" >> $(PERF_CSV); \
+			echo "$$i,$$(basename $$prog),$(NBODIES),$${time_sec}" >> $(PERF_CSV); \
 		done; \
 	done
 	@echo "Results written to $(PERF_CSV)"
@@ -94,7 +96,20 @@ build-gpu: $(SRC_GPU)
 
 run-gpu: build-gpu
 	@echo "Running $(TARGET_GPU)..."
-	@./$(TARGET_GPU)	
+	@./$(TARGET_GPU)
+
+perf-gpu: build-gpu
+	@echo "Running perf measurements for GPU version ($(RUNS) runs)..."
+	@mkdir -p $(RESULTS_DIR)
+	@if [ ! -s "$(PERF_CSV)" ]; then echo "run,program,nbodies,time_sec" > "$(PERF_CSV)"; fi
+	@for i in $(shell seq 1 $(RUNS)); do \
+		echo "Measuring $(TARGET_GPU) (run $$i)..."; \
+		out=$$( (LANG=C perf stat -x, -e duration_time -- "./$(TARGET_GPU)") 2>&1 1>/dev/null ); \
+		dur_ns=$$(echo "$$out" | awk -F, '$$3=="duration_time" {print $$1; exit}'); \
+		time_sec=$$(awk 'BEGIN{ns='"$$dur_ns"'; if (ns=="" || ns=="<not counted>") {print ""} else {printf "%.9f", ns/1e9}}'); \
+		echo "$$i,$(basename $(TARGET_GPU)),$(NBODIES),$${time_sec}" >> $(PERF_CSV); \
+	done
+	@echo "Results written to $(PERF_CSV)"	
 
 # Target to generate outputs for both models with the same params
 run-both: run run-gpu
